@@ -4,8 +4,6 @@ go:
   - master
 os:
   - linux
-  - osx
-#  - windows
 dist: trusty
 sudo: false
 install: true
