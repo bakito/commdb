@@ -1,0 +1,35 @@
+### Get all
+http://localhost:8080/command
+
+### Get with id 1
+
+http://localhost:8080/command/1
+
+### Add new command
+
+PUT http://localhost:8080/command
+content-type: application/json
+
+{
+    "command": "ls -al",
+    "keywords": [
+        "ls",
+        "all" 
+    ]
+}
+### Update command 1
+
+POST  http://localhost:8080/command/1
+content-type: application/json
+
+{
+    "command": "ls -alh",
+    "keywords": [
+        "ls",
+        "all" 
+    ]
+}
+
+### Delete with id 1
+
+DELETE http://localhost:8080/command/1
