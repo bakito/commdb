@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"strconv"
+
 	"github.com/bakito/commdb/types"
 	"github.com/go-xorm/xorm"
 	"github.com/kataras/iris"
@@ -41,9 +43,35 @@ func (c *CommandController) DeleteBy(id int64, ctx iris.Context) interface{} {
 }
 
 // Get get all existing commands
-func (c *CommandController) Get() interface{} {
+func (c *CommandController) Get(ctx iris.Context) interface{} {
+	pageSize, err := strconv.Atoi(ctx.URLParamDefault("pageSize", "100"))
+
+	if err != nil {
+		ctx.Application().Logger().Error(err)
+		return iris.StatusBadRequest
+	}
+
+	page, err := strconv.Atoi(ctx.URLParamDefault("page", "0"))
+
+	if err != nil {
+		ctx.Application().Logger().Error(err)
+		return iris.StatusBadRequest
+	}
+
+	query := ctx.URLParam("search")
+
 	commands := []types.Command{}
-	c.orm.Find(&commands)
+
+	if query != "" {
+		err = c.orm.Where("command like ?", "%"+query+"%").Or("keywords like ?", "%"+query+"%").Limit(pageSize, page).Find(&commands)
+	} else {
+		err = c.orm.Limit(pageSize, page).Find(&commands)
+	}
+	if err != nil {
+		ctx.Application().Logger().Error(err)
+		return iris.StatusInternalServerError
+	}
+
 	return commands
 }
 
@@ -52,6 +80,12 @@ func (c *CommandController) Put(ctx iris.Context) interface{} {
 
 	command := &types.Command{}
 	err := ctx.ReadJSON(command)
+
+	if err != nil {
+		ctx.Application().Logger().Error(err)
+		return iris.StatusBadRequest
+	}
+
 	_, err = c.orm.Insert(command)
 	if err == nil {
 		return command
@@ -69,7 +103,7 @@ func (c *CommandController) PostBy(id int64, ctx iris.Context) interface{} {
 	err := ctx.ReadJSON(command)
 	if err != nil {
 		ctx.Application().Logger().Error(err)
-		return iris.StatusInternalServerError
+		return iris.StatusBadRequest
 	}
 
 	_, err = c.orm.ID(id).Update(command)

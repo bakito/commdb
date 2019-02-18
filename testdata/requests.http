@@ -1,6 +1,12 @@
 ### Get all
 http://localhost:8080/command
 
+### Get all with ls in command or keywords
+http://localhost:8080/command?search=ls
+
+### Get page 1 with ls in command or keywords and pageSize 1
+http://localhost:8080/command?search=al&page=1&pageSize=1
+
 ### Get with id 1
 
 http://localhost:8080/command/1
