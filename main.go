@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/bakito/commdb/controller"
+	"github.com/bakito/commdb/service"
 	"github.com/bakito/commdb/types"
 	"github.com/go-xorm/xorm"
 	"github.com/kataras/iris"
@@ -28,7 +29,8 @@ func main() {
 	}
 
 	mvc.Configure(app.Party("/command"), func(app *mvc.Application) {
-		app.Handle(controller.New(orm))
+		app.Register(service.NewCommandService(orm))
+		app.Handle(controller.New())
 	})
 
 	app.Run(iris.Addr(":8080"), iris.WithoutServerError(iris.ErrServerClosed))

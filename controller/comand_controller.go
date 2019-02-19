@@ -3,25 +3,24 @@ package controller
 import (
 	"strconv"
 
+	"github.com/bakito/commdb/service"
 	"github.com/bakito/commdb/types"
-	"github.com/go-xorm/xorm"
 	"github.com/kataras/iris"
 )
 
 // New a new controller
-func New(orm *xorm.Engine) *CommandController {
-	return &CommandController{orm: orm}
+func New() *CommandController {
+	return &CommandController{}
 }
 
 // CommandController command controller
 type CommandController struct {
-	orm *xorm.Engine
+	Service service.CommandService
 }
 
 // GetBy get command by ID
 func (c *CommandController) GetBy(id int64) interface{} {
-	command := &types.Command{ID: id}
-	if ok, _ := c.orm.Get(command); ok {
+	if command, ok := c.Service.GetByID(id); ok {
 		return command
 	}
 
@@ -30,8 +29,7 @@ func (c *CommandController) GetBy(id int64) interface{} {
 
 // DeleteBy delete command by ID
 func (c *CommandController) DeleteBy(id int64, ctx iris.Context) interface{} {
-	command := &types.Command{}
-	_, err := c.orm.ID(id).Delete(command)
+	err := c.Service.DeleteByID(id)
 
 	if err != nil {
 		ctx.Application().Logger().Error(err)
@@ -39,7 +37,6 @@ func (c *CommandController) DeleteBy(id int64, ctx iris.Context) interface{} {
 	}
 
 	return nil
-
 }
 
 // Get get all existing commands
@@ -60,13 +57,8 @@ func (c *CommandController) Get(ctx iris.Context) interface{} {
 
 	query := ctx.URLParam("search")
 
-	commands := []types.Command{}
+	commands, err := c.Service.GetAll(query, page, pageSize)
 
-	if query != "" {
-		err = c.orm.Where("command like ?", "%"+query+"%").Or("keywords like ?", "%"+query+"%").Limit(pageSize, page).Find(&commands)
-	} else {
-		err = c.orm.Limit(pageSize, page).Find(&commands)
-	}
 	if err != nil {
 		ctx.Application().Logger().Error(err)
 		return iris.StatusInternalServerError
@@ -86,7 +78,8 @@ func (c *CommandController) Put(ctx iris.Context) interface{} {
 		return iris.StatusBadRequest
 	}
 
-	_, err = c.orm.Insert(command)
+	_, err = c.Service.Create(command)
+
 	if err == nil {
 		return command
 	}
@@ -106,7 +99,8 @@ func (c *CommandController) PostBy(id int64, ctx iris.Context) interface{} {
 		return iris.StatusBadRequest
 	}
 
-	_, err = c.orm.ID(id).Update(command)
+	command.ID = id
+	err = c.Service.Update(command)
 	if err == nil {
 		return command
 	}
