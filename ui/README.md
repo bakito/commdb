@@ -66,3 +66,12 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+## Links
+
+https://stackoverflow.com/questions/52641907/how-to-get-mobx-decorators-to-work-with-create-react-app-v2
+https://react-bootstrap.netlify.com/components/alerts/
+https://reactjs.org/tutorial/tutorial.html
+https://mobx.js.org/refguide/modifiers.html
+
+https://github.com/almog-kiki/react-mobx-page-animation
