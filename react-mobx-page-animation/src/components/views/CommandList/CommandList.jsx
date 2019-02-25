@@ -15,7 +15,7 @@ class CommandList extends Component {
   }
 
   componentDidMount() {
-    this.props.CommandModel.load(this.props.CommandModel);
+    this.props.CommandModel.load();
   }
 
   render() {
@@ -24,7 +24,7 @@ class CommandList extends Component {
       <Fragment>
         <ul>
           {rows.map((r, idx) => {
-            return <li>{idx + 1 + ". " + r.command}</li>;
+            return <li key={idx}>{idx + 1 + ". " + r.command}</li>;
           })}
         </ul>
       </Fragment>

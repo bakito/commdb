@@ -5,12 +5,13 @@ class CommandModel {
   @observable rows = [];
 
   @action
-  load = m => {
+  load = () => {
+    const model = this;
     axios
       .get("/api/command")
       .then(function(response) {
         // handle success
-        m.rows = response.data;
+        model.rows = response.data;
         console.log(response);
       })
       .catch(function(error) {
@@ -20,9 +21,9 @@ class CommandModel {
   };
 }
 
-var store = (window.commandModel = new CommandModel());
+//var store = (window.commandModel = new CommandModel());
 export default new CommandModel();
 
-autorun(() => {
+/*autorun(() => {
   console.log("CommandModel.load: " + store.load);
-});
+});*/
