@@ -7,9 +7,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import { Provider } from "mobx-react";
 import AnimationStore from "./stores/AnimationStore";
+import CommandModel from "./stores/CommandModel";
 
 const Root = (
-  <Provider AnimationStore={AnimationStore}>
+  <Provider AnimationStore={AnimationStore} CommandModel={CommandModel}>
     <App />
   </Provider>
 );
