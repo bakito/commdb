@@ -1,3 +1,5 @@
 debug
 *.db
 node_modules
+.vscode
+gui
